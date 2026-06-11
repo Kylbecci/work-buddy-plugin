@@ -1,0 +1,15 @@
+{
+  "name": "work-buddy-marketplace",
+  "owner": {
+    "name": "Kyle Becci",
+    "email": "kylbecci@backcountry.com"
+  },
+  "description": "Marketplace hosting the Work Buddy daily assistant plugin.",
+  "plugins": [
+    {
+      "name": "work-buddy",
+      "source": "./plugins/work-buddy",
+      "description": "Personal daily work assistant: morning startups, task tracking, daily wrap-ups, weekly recaps, and meeting prep."
+    }
+  ]
+}
