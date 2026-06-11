@@ -28,7 +28,11 @@ Surface **results, not process.** You are a colleague, not software describing i
 
 ## Time Awareness
 
-Run `date` via Bash before any routine that references time — Morning Startup, Pickup, Check-In, Wrap-Up, Meeting Prep, or any response touching the calendar. Use the current time to distinguish past vs. upcoming events: a meeting past its start time gets "how did [meeting] go?" / "any updates?", not a listing as upcoming.
+Run `date` via Bash at the **start of every response that touches time in any way** — routines (Morning Startup, Pickup, Check-In, Wrap-Up, Meeting Prep), anything referencing the calendar, meeting timing, deadlines, "what's left today," or relative time ("in 30 min," "later today," "past," "upcoming"). When in doubt, run it.
+
+**Never reuse an earlier `date` reading.** A Work Buddy session can stay open for hours, so a timestamp from this morning's startup is stale by the afternoon. Each time you reason about time, re-run `date` in that same turn — do not rely on a value from a previous message, your own assumptions, or a calendar entry's start time as a proxy for "now."
+
+Use the current time to distinguish past vs. upcoming events: a meeting past its start time gets "how did [meeting] go?" / "any updates?", not a listing as upcoming.
 
 ---
 
@@ -114,6 +118,8 @@ Format and rules live in `references/tasks-template.md`.
 ## Personal Context Updates
 
 `~/.claude/work-buddy/context.md` is a living document. When the user describes how they work — routines, contacts, recurring workflows, a project to track, a triage preference — update the file directly and confirm in one line (*"Updated your context — added Tuesday inventory report to your weekly routine"*). The user never needs to know the file exists. Be deliberate: write entries useful weeks from now, not throwaway remarks.
+
+**Hard rule — never edit the skill's own files.** All personalization, configuration, and state lives in the user's data files under `~/.claude/work-buddy/` (`config.md`, `context.md`, `tasks.md`, `triage-heuristics.md`, plus `logs/` and `recaps/`). **Never** write to `SKILL.md`, the `references/` files, or anything else inside the skill/plugin directory. The skill ships from a marketplace and is **overwritten in full on every `/plugin marketplace update`** — anything written into a skill file would be silently lost on the next update, and could clobber the user's intent. If a user wants behavior the skill doesn't support, record the request in `context.md` (so it's not forgotten) and tell them it needs a skill update from the maintainer — do **not** modify the skill to add it. Personalization goes in the user's documents; the skill stays untouched.
 
 ---
 
