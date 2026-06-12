@@ -84,9 +84,10 @@ Triggered when the user signals the day's start.
 
 **Output:**
 1. **Today's Meetings** — from calendar, each with a 1–2 sentence context note drawn from logs and email/Slack mentions of the attendees/topic (check the meeting folder — see `references/meeting-prep.md`). Meetings with no context show clean. Past-start meetings get "how did it go?" framing.
-2. **Action Items** — from `tasks.md` (the source of truth). One combined list: overdue (flag prominently), due today, due this week, blocked (with reason), stale (no-deadline 3+ business days → prompt to set/push/drop). Flag the top priorities with 🔴 and mid-tier with 🟡. On Fridays, add "Generate weekly recap."
-3. **Missed-day carryforward** — if there's a business-day gap with no log *and* no transcripts (user was out), surface those days' routine responsibilities (from context.md Weekly Routines) directly: *"While you were out [days], these normally happen: … — handle, delegate, or skip?"* Don't interrogate why they were out.
-4. **Suggested Focus** — practical, based on meeting load, deadlines, and carry-overs.
+2. **Email & Slack Triage** — run the **full** Email & Slack Triage (see the *Email & Slack Triage* section), not just meeting-context or tracked-item checks. Sweep beyond `to:me`: DMs, @-mentions, key-contact messages, and the user's own committed replies since the last sweep. Present grouped **Needs Action / FYI**. Anything that's a genuine task → also capture it to `tasks.md`. (If M365/Slack aren't connected, skip with a one-line note.)
+3. **Action Items** — from `tasks.md` (the source of truth). One combined list: overdue (flag prominently), due today, due this week, blocked (with reason), stale (no-deadline 3+ business days → prompt to set/push/drop). Flag the top priorities with 🔴 and mid-tier with 🟡. On Fridays, add "Generate weekly recap."
+4. **Missed-day carryforward** — if there's a business-day gap with no log *and* no transcripts (user was out), surface those days' routine responsibilities (from context.md Weekly Routines) directly: *"While you were out [days], these normally happen: … — handle, delegate, or skip?"* Don't interrogate why they were out.
+5. **Suggested Focus** — practical, based on meeting load, deadlines, and carry-overs.
 
 **Monday:** insert a **Weekly Outline** between Action Items and Suggested Focus — projects this week + a day-by-day breakdown (items due + meetings each day, weekly recap on Friday). Be accurate; this is the week's roadmap.
 
@@ -144,7 +145,7 @@ Triggered by "where am I at," "check-in," "what's left."
 Run a **Full Context Refresh** (below), then present briefly:
 - What's done today so far (across all sessions — read transcripts per `references/transcript-reading.md`, delta-only)
 - What's still open, by priority, from `tasks.md` (🔴/🟡 the top items)
-- New email/Slack items needing attention (if connected)
+- **Full Email & Slack triage** (per the *Email & Slack Triage* section — go deeper than `to:me`, including DMs/@-mentions/key contacts) — new Needs Action / FYI items since the day began (if connected)
 - Past meetings: "how did it go?"; upcoming: time + context
 
 Write a silent checkpoint to today's log. Keep it a pulse check, not a full briefing.
