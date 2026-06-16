@@ -10,7 +10,23 @@ It also matters for any **non-interactive/automatic run**: those can't answer pe
 
 **Portable (identical for everyone):**
 - `Bash(date:*)` — the skill runs `date` on every time-aware response.
-- `Read(~/.claude/work-buddy/**)`, `Edit(~/.claude/work-buddy/**)`, `Write(~/.claude/work-buddy/**)` — the data files (config, context, triage-heuristics, tasks, logs, recaps, meetings).
+- The data-file rules (`Read`/`Edit`/`Write` over `~/.claude/work-buddy/**`) — config, context, triage-heuristics, tasks, logs, recaps, meetings. **On Windows the `~/...` form alone does not reliably match** — see *Path form by OS* below; emit the OS-correct forms there, not just the tilde.
+
+### Path form by OS (Windows gotcha — read before writing the file rules)
+
+The file-path rules above must be written in a form that the running OS's permission matcher actually compares against — otherwise the rule is present but never matches, the module reports success, and the user still gets prompted on **every** work-buddy file write (the exact friction this module exists to remove). On macOS/Linux the `~` expands and matches; on Windows it does **not** reliably match the normalized absolute path Claude Code evaluates.
+
+So when writing the data-file rules, branch on OS and emit **all** applicable forms (extra forms that don't match are harmless — they just sit unused):
+
+- **macOS / Linux** — the tilde form is enough:
+  - `Read(~/.claude/work-buddy/**)`, `Edit(~/.claude/work-buddy/**)`, `Write(~/.claude/work-buddy/**)`
+- **Windows** — keep the tilde form **and** add OS-correct absolute forms. **Detect the user's home dir / drive / username at runtime — never hardcode a username.** For each of Read / Edit / Write, emit:
+  - the tilde form: `…(~/.claude/work-buddy/**)`
+  - the forward-slash drive form: `…(C:/Users/<user>/.claude/work-buddy/**)`
+  - the Git-Bash normalized form Claude Code uses on Windows: `…(//c/c/Users/<user>/.claude/work-buddy/**)`
+  - (Substitute the real drive letter + username; the doubled `//c/c/` is the observed Claude Code normalization, not a typo.)
+
+Emitting multiple candidate forms is deliberate: the exact normalized form is a Claude Code implementation detail that can vary, so covering the likely forms is more robust than betting on one.
 
 **Per-install (must be detected — see below):**
 - The connected connector tools: **Microsoft 365** and **Slack**.
@@ -36,7 +52,7 @@ For each **connected** connector (M365, Slack), add a rule for its server prefix
 ## Writing the rules (idempotent)
 
 1. Read `~/.claude/settings.json` (if absent, start from `{ "permissions": { "allow": [] } }`).
-2. Build the rule list: the portable rules above + one rule per detected, connected connector.
+2. Build the rule list: `Bash(date:*)` + the data-file rules in the **OS-correct form(s)** (see *Path form by OS* — on Windows emit the tilde, `C:/Users/<user>/…`, and `//c/c/Users/<user>/…` forms) + one rule per detected, connected connector.
 3. **Merge, don't clobber:** add only rules not already present in `permissions.allow`. Never remove or rewrite the user's existing rules.
 4. **Show the user the exact rules** about to be added and confirm before writing.
 5. Write the merged `settings.json`.
