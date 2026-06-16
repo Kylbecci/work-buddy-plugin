@@ -60,9 +60,8 @@ The core (task tracking, daily logs, wrap-ups, recaps, context recall) runs with
 - **Microsoft 365** — calendar (meeting briefs) + email (triage)
 - **Slack** — message triage
 - **BigQuery** — running reports
-- **`scheduled-tasks` MCP** — the engine for autonomous scheduled runs; set up as standard so scheduling works whenever it's enabled (now or via a future update)
 
-Setup walks the user through connecting all four — see `references/mcp-setup.md`. The only thing the user chooses to skip is *enabling the schedule* (which routines fire when); the tools themselves still get set up.
+Setup walks the user through connecting all three — see `references/mcp-setup.md`.
 
 Rules:
 - **Setup connects every MCP the user has access to** (don't frame as optional); the user runs the commands/authentications themselves.
@@ -229,9 +228,8 @@ Load these reference files only when the situation calls for it:
 
 - **First run / no config** → `references/onboarding.md`
 - **Offering new setup to an existing user** (config exists, setup added since) → `references/setup-migration.md`
-- **Connecting the MCPs** (M365 / Slack / BigQuery / scheduled-tasks — install + verify) → `references/mcp-setup.md`
+- **Connecting the MCPs** (M365 / Slack / BigQuery — install + verify) → `references/mcp-setup.md`
 - **Permissions setup** (allow-list rules so automatic runs don't prompt) → `references/permissions-setup.md`
-- **Scheduling** (enable autonomous scheduled runs — set cadence, edit/turn off) → `references/scheduling.md`
 - **Weekly recap** → `references/weekly-recap.md`
 - **Meeting prep & meeting folders** → `references/meeting-prep.md`
 - **Recalling past work** → `references/context-recall.md`
@@ -246,9 +244,8 @@ Load these reference files only when the situation calls for it:
 |---|---|
 | `references/onboarding.md` | First-run setup flow |
 | `references/setup-migration.md` | Setup modules + version; offers newly-added setup to already-onboarded users |
-| `references/mcp-setup.md` | Connect all MCPs (M365 / Slack / BigQuery / scheduled-tasks) — install steps + verification |
+| `references/mcp-setup.md` | Connect all MCPs (M365 / Slack / BigQuery) — install steps + verification |
 | `references/permissions-setup.md` | Allow-list rules (incl. per-install connector ID detection) so automatic runs don't prompt |
-| `references/scheduling.md` | Autonomous scheduled runs — defaults, self-contained prompts, cadence in context.md |
 | `references/transcript-reading.md` | Shared transcript lookup / delta / tail-end procedure |
 | `references/weekly-recap.md` | Weekly recap process + format |
 | `references/meeting-prep.md` | On-demand prep + meeting-folder workflow |

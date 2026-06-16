@@ -2,7 +2,7 @@
 
 By default every tool call that isn't pre-allowed prompts for permission, and "Allow once" doesn't persist across runs. Work Buddy adds allow-list rules to the user's `~/.claude/settings.json` so routine actions stop prompting. This is the **`permissions`** setup module (introduced setup version 2) and a **standard, non-optional part of setup** — without it, Work Buddy prompts for approval on nearly every action, which is the single biggest source of day-to-day friction. Do **not** frame it as a skippable extra. The only gate is showing the exact rules and confirming before writing to `settings.json` (normal practice for touching a config file) — that's a consent step for the write, not an invitation to skip the feature.
 
-This module is the **gate for scheduling (#12–#15):** autonomous scheduled runs are non-interactive, so without these rules they'd stall on permission prompts.
+It also matters for any **non-interactive/automatic run**: those can't answer permission prompts, so without these allow-list rules they'd stall.
 
 ---
 

@@ -42,14 +42,6 @@ Anything else that helps your Work Buddy understand your work — upcoming deadl
 
 ---
 
-## Scheduled Runs (auto-managed — do not hand-edit)
-
-If you opted into automatic scheduled runs, the enabled routines and their times live here (kept in sync with the actual scheduled tasks). Tell your Work Buddy to change a time or turn one off anytime. (See `references/scheduling.md`.)
-
-_Not set up._
-
----
-
 ## Meeting Load Baseline (auto-managed — do not hand-edit)
 
 Your typical committed meeting load by day of week, so "heavy" and "light" days are judged against *your* normal rather than an absolute guess. Your Work Buddy computes this from the trailing 4 weeks of your calendar and refreshes it about once a week (whenever it's more than ~6.5 days old) — you don't need to fill it in.

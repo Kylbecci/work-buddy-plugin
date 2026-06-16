@@ -75,11 +75,8 @@ Setup walks you through connecting Work Buddy's tools — and it's worth doing a
 | **Microsoft 365** | Calendar meeting briefs + email triage |
 | **Slack** | Message triage — surfaces what needs your attention |
 | **BigQuery** | On-demand reports |
-| **`scheduled-tasks` MCP** | The engine for automatic scheduled runs — set up so it's ready whenever you turn scheduling on |
 
 Setup helps you connect each one (you run the sign-ins/commands yourself). Core Work Buddy still runs if one is temporarily disconnected — it just uses what's available.
-
-**Automatic scheduling.** Setup gets the pieces in place; whether you actually *turn on* scheduled runs — your morning brief, check-ins, and Friday recap firing on their own — is your call, and you can enable or change it anytime.
 
 ---
 

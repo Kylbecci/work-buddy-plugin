@@ -1,6 +1,6 @@
 # Setup Migration — reaching already-onboarded users
 
-New onboarding-gated setup (permissions, scheduling, anything future) must also reach users who onboarded **before** that feature existed. They already have a `config.md`, so onboarding never re-runs for them. This is the mechanism that offers them the new setup — **once, with consent**.
+New onboarding-gated setup (permissions, anything future) must also reach users who onboarded **before** that feature existed. They already have a `config.md`, so onboarding never re-runs for them. This is the mechanism that offers them the new setup — **once, with consent**.
 
 (The updated skill *files* arrive on their own via marketplace update / auto-update. This handles the per-user *setup state* those files depend on.)
 
@@ -18,17 +18,13 @@ Setup is tracked as discrete **modules**, each idempotent and runnable on its ow
 | `personalize` | 1 | routines, contacts, workflows | onboarding step 4 |
 | `integrations` | 1 | early connector awareness (superseded by `mcp-setup`) | onboarding (legacy) |
 | `permissions` | 2 | allow-list rules so automatic runs don't prompt | `references/permissions-setup.md` |
-| `mcp-setup` | 3 | connect ALL MCPs (M365, Slack, BigQuery, scheduled-tasks) | `references/mcp-setup.md` |
-| `scheduling` | 3 | enable autonomous scheduled runs (the cadence) | `references/scheduling.md` |
+| `mcp-setup` | 3 | connect ALL MCPs (M365, Slack, BigQuery) | `references/mcp-setup.md` |
 
 **Current setup version: 3.** (Bump this and add a row whenever a new setup module ships.)
 
-**Everything is standard setup — get it all working.** Run every module; don't frame any as a skippable extra. The **only** user choice is whether to *enable the schedule* (the `scheduling` module) and which routines fire when — and even if they skip that, its dependencies (`mcp-setup`, `permissions`) are still set up so a future update that turns scheduling on just works.
+**Everything is standard setup — get it all working.** Run every module; don't frame any as a skippable extra.
 
-**Prerequisites:** a module may require another first.
-- `scheduling` requires **`mcp-setup`** (which connects the `scheduled-tasks` MCP, the engine for scheduled runs) and **`permissions`**. Both are core modules, so by the time scheduling is offered they should already be done; if either is somehow missing, run it first.
-
-When offering or running a module with an unmet prerequisite, satisfy the prerequisite module first.
+**Prerequisites:** none currently — every module is independent and can run on its own.
 
 ---
 
@@ -53,7 +49,7 @@ Run **silently** right after reading config:
 4. **If there are new modules** → after the session's **first briefing** (never interrupt it), make **one concise, consented offer**. Voice & Discretion applies — never say "module"/"migration"; frame it as a new capability:
    > "Since you set me up, I've added a couple of things: [one-line pitch each]. Want me to set [that] up? (~1 min each.)"
    - **Accept** → run the module's procedure (its reference file), add it to `Completed modules`, bump the user's `Setup version` toward current.
-   - **Decline** → add to `Declined modules` with today's date; don't auto-offer it again. The user can still ask later ("set up scheduling"), which runs it on demand.
+   - **Decline** → add to `Declined modules` with today's date; don't auto-offer it again. The user can still ask later ("set that up"), which runs it on demand.
 5. When all new modules are completed or declined, set `Setup version` to current.
 
 **One offer per session, max.** If the user is mid-task, hold it to the end. Never nag across a briefing.

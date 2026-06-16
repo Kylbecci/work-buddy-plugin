@@ -38,18 +38,6 @@ claude mcp add --scope user bigquery -- npx -y @ergut/mcp-bigquery-server --proj
 
 ---
 
-## scheduled-tasks (engine for automatic runs)
-
-Set this up as part of standard setup — **not** only when enabling the schedule — so scheduled runs work the moment they're turned on (now, or whenever a future update enables them). It's a local MCP, added the same way:
-
-```
-claude mcp add --scope user scheduled-tasks -- <the scheduled-tasks MCP server command>
-```
-
-> ⚠️ **OWNER TODO — fill in before rollout.** Backend is **decided: Ryan's `scheduled-tasks` MCP** (tools `create_scheduled_task` / `list_scheduled_tasks` / `update_scheduled_task`). What's left is to capture the exact `claude mcp add` command from Ryan's setup and drop it in here + the go-live email — handled during email finalization. Until it's filled in, scheduling only works for users who already have the `scheduled-tasks` MCP connected.
-
----
-
 ## Verify everything
 
 - `claude mcp list` (terminal) — each MCP shows ✓ connected.
