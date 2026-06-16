@@ -13,7 +13,10 @@ It also matters for any **non-interactive/automatic run**: those can't answer pe
 - `Read(~/.claude/work-buddy/**)`, `Edit(~/.claude/work-buddy/**)`, `Write(~/.claude/work-buddy/**)` — the data files (config, context, triage-heuristics, tasks, logs, recaps, meetings).
 
 **Per-install (must be detected — see below):**
-- The connected connector tools: **Microsoft 365**, **Slack**, **BigQuery**.
+- The connected connector tools: **Microsoft 365** and **Slack**.
+
+**Never allowed — BigQuery is deliberately excluded:**
+- **Do not add any BigQuery (`mcp__<bigquery-server>__*`) rule, for any user.** BigQuery must stay manually gated so every query is reviewed before it runs (read-only posture; write/DDL tools must never be silently pre-approved). Skip the BigQuery MCP entirely when building permission rules — even if it's connected. If a user already has explicit BigQuery allow rules in their `settings.json`, leave them as-is; never add new ones and never add a wildcard.
 
 ---
 
@@ -23,9 +26,10 @@ The connectors' MCP tool names embed a **per-install server ID**, so they **cann
 
 - **Microsoft 365** → the server prefix of the available M365 calendar/email/chat-search tools.
 - **Slack** → the server prefix of the available Slack search/read tools.
-- **BigQuery** → the server prefix of the available BigQuery query tool.
 
-For each **connected** connector, add a rule for its server prefix (e.g. `mcp__<server>__*` to allow that connector's tools). If a connector isn't connected, **skip its rule** and note it can be added later once connected (the module is re-runnable).
+**BigQuery is intentionally not in this list** — never detect it or build a rule for it (see *What gets allowed* above). It stays manually gated for every user.
+
+For each **connected** connector (M365, Slack), add a rule for its server prefix (e.g. `mcp__<server>__*` to allow that connector's tools). If a connector isn't connected, **skip its rule** and note it can be added later once connected (the module is re-runnable).
 
 ---
 
