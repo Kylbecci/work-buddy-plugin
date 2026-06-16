@@ -86,3 +86,15 @@ Active projects and their named sessions (if any). Managed automatically from co
 
 ```
 ```
+
+---
+
+## Setup
+
+Tracks which one-time setup steps you've completed, so features added later can be offered to you without redoing setup. Auto-managed — don't hand-edit. (See `references/setup-migration.md`.)
+
+```
+Setup version: (set during onboarding)
+Completed modules: (set during onboarding)
+Declined modules:
+```

@@ -26,11 +26,15 @@ Loaded only when no config exists at `~/.claude/work-buddy/config.md`. The goal:
    - Subfolders: `logs/`, `recaps/`, `meetings/`
    - Copy templates: `config.md`, `context.md`, `triage-heuristics.md`, `tasks.md` (from `references/*-template.md`), filled in with the user's answers.
 
-6. **MCP check — value-framed, mention once:** Detect which of the three integrations are connected (Microsoft 365, Slack, BigQuery). Then: "Work Buddy works fine without these, but it's **most useful** with them connected — **Microsoft 365** gives calendar briefs + email triage, **Slack** gives message triage, **BigQuery** lets me run reports. Want help connecting any?" If they decline, move on — do **not** nag in future sessions; only raise it again if they invoke a feature that needs one.
+6. **Connect the tools (MCP setup) — standard, walk through all of them:** Set up every MCP Work Buddy uses — **Microsoft 365**, **Slack**, **BigQuery**, and the **`scheduled-tasks`** MCP — per `references/mcp-setup.md`. This is not pick-and-choose: connecting them is what makes Work Buddy fully useful, and the scheduled-tasks MCP must be in place so scheduled runs work whenever they're enabled (now or via a later update). Frame it as part of getting set up, not optional. The user runs the commands/authentications themselves (the assistant can't). Detect what's already connected and only walk through what's missing.
 
-7. **Orient + README (one line per file):** "I've set up four files you never edit directly — just talk to me and I keep them current: **config** (settings), **context** (teaches me your job), **triage-heuristics** (email/Slack filters), **tasks** (your open items). The README has the full tour if you want it."
+7. **Permissions (standard setup — not optional):** add allow-list rules so routine tool calls don't prompt for approval every time. This is core to Work Buddy not constantly interrupting the user — run it as a normal part of setup, not a skippable extra. Per `references/permissions-setup.md` (it detects the user's connected connector IDs, shows the exact rules, and confirms before writing to `settings.json` — that confirmation is the only gate). Note the outcome for the Setup markers (step 11).
 
-8. **Next steps — how to make it yours (leave them with this).** Personalization is ongoing, not a one-time form. Give concrete examples they can say anytime:
+8. **Scheduling (optional):** offer autonomous scheduled runs — the morning brief, midday check-in, etc. firing on a schedule (push, not pull) rather than only when they type `/work-buddy`. Offer sensible defaults, all editable; skippable. **Only offer if the `scheduled-tasks` MCP is available** (its engine) — if it's not connected, mention scheduling needs it and move on. Requires the permissions step (7) first. Run per `references/scheduling.md`. Note the outcome for the Setup markers (step 11).
+
+9. **Orient + README (one line per file):** "I've set up four files you never edit directly — just talk to me and I keep them current: **config** (settings), **context** (teaches me your job), **triage-heuristics** (email/Slack filters), **tasks** (your open items). The README has the full tour if you want it."
+
+10. **Next steps — how to make it yours (leave them with this).** Personalization is ongoing, not a one-time form. Give concrete examples they can say anytime:
    - *"Add to my weekly routine: I run the inventory report every Tuesday."*
    - *"I work with Sarah on pricing."*
    - *"Here's how I do month-end close: first… then…"*
@@ -38,7 +42,9 @@ Loaded only when no config exists at `~/.claude/work-buddy/config.md`. The goal:
    - *"Stop surfacing emails from X" / "always show me messages about Y."*
    "The more you tell me about your role and how you work, the better I get. Don't worry about getting it all in now — just mention things as they come up."
 
-9. **Done:** "You're set. Type `/work-buddy` any morning and I'll have your day ready."
+11. **Record setup state:** write the **## Setup** markers in `config.md` (per `references/setup-migration.md`) — `Setup version` = current, `Completed modules` = every module just run, `Declined modules` = any the user skipped. This is what lets features added later be offered to this user without redoing setup.
+
+12. **Done:** "You're set. Type `/work-buddy` any morning and I'll have your day ready."
 
 ---
 

@@ -36,17 +36,37 @@ Use the current time to distinguish past vs. upcoming events: a meeting past its
 
 ---
 
+## Calendar Data — read the right field
+
+Two calendar fields are easily confused and mean different things:
+
+- **`showAs`** (busy / tentative / free / oof) is the **free-busy display only** — NOT the user's RSVP. An event the user fully **accepted** can still read `showAs: tentative` (e.g. it overlaps another meeting, or the organizer set it that way), and the calendar **search index can lag a fresh acceptance** and hand back a stale `showAs`.
+- **`responseStatus`** is the user's **actual RSVP**: `accepted`, `organizer` (the user created the meeting), `tentativelyAccepted`, `declined`, or `notResponded` / `none` (invited, no reply yet).
+
+Rules:
+- **Never report or infer the user's RSVP from `showAs`.** Use `responseStatus`.
+- **Organizer = committed, for free.** The calendar **search already returns `isOrganizer: true`** for the user's own meetings (`responseStatus: organizer`). Treat those as committed — no live read needed.
+- **Only `declined` is a decline.** `notResponded` / `none` means *invited but not yet RSVP'd* — it is NOT a decline; never drop or down-rank a meeting just because the user hasn't responded.
+- The calendar **search** returns `showAs` but not a reliable `responseStatus`. When RSVP actually matters (an accept/decline/tentative claim, whether a meeting counts as committed, or the no-RSVP flag below), **read the specific event's live record** (`read_resource` on the event URI) and use its `responseStatus` — don't trust the search snapshot.
+- For meeting *timing* and free/busy *load*, `showAs` is fine; only **RSVP claims** require the live `responseStatus`.
+- **Surface un-responded invites.** If the user hasn't RSVP'd to a meeting (`notResponded` / `none`), gently flag it — a missing RSVP is often unintentional. (Wired into Morning Startup → Today's Meetings.)
+
+---
+
 ## Integrations
 
-Work Buddy works fully **without** any integrations — the core (task tracking, daily logs, wrap-ups, weekly recaps, context recall) needs none. But it's **most useful** with these three connected:
+The core (task tracking, daily logs, wrap-ups, recaps, context recall) runs without integrations, but Work Buddy is only **fully** itself with its MCPs connected — so **setup connects all of them**, it's not pick-and-choose:
 
 - **Microsoft 365** — calendar (meeting briefs) + email (triage)
 - **Slack** — message triage
 - **BigQuery** — running reports
+- **`scheduled-tasks` MCP** — the engine for autonomous scheduled runs; set up as standard so scheduling works whenever it's enabled (now or via a future update)
+
+Setup walks the user through connecting all four — see `references/mcp-setup.md`. The only thing the user chooses to skip is *enabling the schedule* (which routines fire when); the tools themselves still get set up.
 
 Rules:
-- Every integration-dependent step **checks availability and degrades silently** — skip with at most a one-line note, never error or half-run.
-- Surface missing integrations **once, at onboarding**, with the value each adds. After that, only raise one again if the user invokes a feature that needs it. Never nag session to session.
+- **Setup connects every MCP the user has access to** (don't frame as optional); the user runs the commands/authentications themselves.
+- **At runtime, every integration-dependent step still checks availability and degrades silently** — skip with at most a one-line note, never error or half-run (so a temporarily-disconnected MCP, or a pushed feature, never breaks a session).
 
 ---
 
@@ -61,10 +81,11 @@ Do work with your own tools (Read, Grep, Bash, MCP). Spawn an agent only as a tr
 1. Run `date`.
 2. Check for `~/.claude/work-buddy/config.md`. The data directory is **exactly** `~/.claude/work-buddy/` — never substitute a differently-named folder (e.g. a backup) even if one exists nearby.
    - **Missing** → run Onboarding (see `references/onboarding.md`).
-   - **Exists** → read the config silently, then open with **only** this question — no preamble, and don't mention the config or that it was found: *"Morning startup, or just picking up where you left off?"*
+   - **Exists** → read the config silently (including the `## Setup` section — run the **setup-migration check** per `references/setup-migration.md` to see whether any newly-added setup should be offered later this session), then open with **only** this question — no preamble, and don't mention the config or that it was found: *"Morning startup, or just picking up where you left off?"*
      - **Morning startup** → full Morning Startup routine.
      - **Pickup** → read config, context MDs, `tasks.md`, the last 5 business days of logs + today's log; then give a brief catch-up: what's done today so far, remaining meetings, open items. Keep it short.
 3. **MCP check** (once): note which of M365 / Slack / BigQuery are connected. If any are missing and the user hasn't been told this session, mention it once per the Integrations rules.
+4. **New-setup offer** (config existed): if the migration check found setup modules added since this user onboarded, make the **one-time, consented** offer at the **end** of the session's first briefing — never interrupt it. See `references/setup-migration.md`.
 
 ---
 
@@ -81,15 +102,16 @@ Triggered when the user signals the day's start.
 **Before anything else:**
 1. **Missed wrap-up?** If the last business day has no wrap-up in its log, generate it now from that day's transcripts (see `references/transcript-reading.md`), write it, then continue. Don't ask — a wrap-up is always needed.
 2. **Read context:** config, `tasks.md`, last 5 business days of logs, today's log if it exists, and the context MDs listed in config. Also read transcripts modified *after* the last wrap-up, to catch late work.
+3. **Meeting-load baseline:** check the `Last computed` stamp in context.md's Meeting Load Baseline; if it's **≥ 6.5 days old or missing**, silently refresh the baseline (`references/meeting-load.md`) before composing Suggested Focus.
 
 **Output:**
-1. **Today's Meetings** — from calendar, each with a 1–2 sentence context note drawn from logs and email/Slack mentions of the attendees/topic (check the meeting folder — see `references/meeting-prep.md`). Meetings with no context show clean. Past-start meetings get "how did it go?" framing.
+1. **Today's Meetings** — from calendar, each with a 1–2 sentence context note drawn from logs and email/Slack mentions of the attendees/topic (check the meeting folder — see `references/meeting-prep.md`). Meetings with no context show clean. Past-start meetings get "how did it go?" framing. For meetings the user did **not** organize, check `responseStatus` (per *Calendar Data* — the search only returns `showAs`, so read the live event record) and **gently flag any the user hasn't RSVP'd to** (`notResponded`/`none` → e.g. "⚠️ no RSVP yet — intentional?"); a missing reply is often an oversight. Never state RSVP from `showAs`.
 2. **Email & Slack Triage** — run the **full** Email & Slack Triage (see the *Email & Slack Triage* section), not just meeting-context or tracked-item checks. Sweep beyond `to:me`: DMs, @-mentions, key-contact messages, and the user's own committed replies since the last sweep. Present grouped **Needs Action / FYI**. Anything that's a genuine task → also capture it to `tasks.md`. (If M365/Slack aren't connected, skip with a one-line note.)
 3. **Action Items** — from `tasks.md` (the source of truth). One combined list: overdue (flag prominently), due today, due this week, blocked (with reason), stale (no-deadline 3+ business days → prompt to set/push/drop). Flag the top priorities with 🔴 and mid-tier with 🟡. On Fridays, add "Generate weekly recap."
 4. **Missed-day carryforward** — if there's a business-day gap with no log *and* no transcripts (user was out), surface those days' routine responsibilities (from context.md Weekly Routines) directly: *"While you were out [days], these normally happen: … — handle, delegate, or skip?"* Don't interrogate why they were out.
-5. **Suggested Focus** — practical, based on meeting load, deadlines, and carry-overs.
+5. **Suggested Focus** — practical, based on meeting load, deadlines, and carry-overs. Judge meeting load **relative to the user's own per-weekday baseline**, never on an absolute feel (see `references/meeting-load.md`) — "heavy" means meaningfully above their typical day-of-week, not a fixed hour count.
 
-**Monday:** insert a **Weekly Outline** between Action Items and Suggested Focus — projects this week + a day-by-day breakdown (items due + meetings each day, weekly recap on Friday). Be accurate; this is the week's roadmap.
+**Monday:** insert a **Weekly Outline** between Action Items and Suggested Focus — projects this week + a day-by-day breakdown (items due + meetings each day, weekly recap on Friday). Be accurate; this is the week's roadmap. Any "heavy/light day" characterization here also uses the per-weekday baseline (`references/meeting-load.md`).
 
 ---
 
@@ -204,10 +226,15 @@ One log per business day at `~/.claude/work-buddy/logs/YYYY-MM-DD.md`; logs pers
 Load these reference files only when the situation calls for it:
 
 - **First run / no config** → `references/onboarding.md`
+- **Offering new setup to an existing user** (config exists, setup added since) → `references/setup-migration.md`
+- **Connecting the MCPs** (M365 / Slack / BigQuery / scheduled-tasks — install + verify) → `references/mcp-setup.md`
+- **Permissions setup** (allow-list rules so automatic runs don't prompt) → `references/permissions-setup.md`
+- **Scheduling** (enable autonomous scheduled runs — set cadence, edit/turn off) → `references/scheduling.md`
 - **Weekly recap** → `references/weekly-recap.md`
 - **Meeting prep & meeting folders** → `references/meeting-prep.md`
 - **Recalling past work** → `references/context-recall.md`
 - **Reading transcripts** (wrap-up, check-in, missed wrap-up) → `references/transcript-reading.md`
+- **Judging meeting load (heavy/light day)** → `references/meeting-load.md`
 
 ---
 
@@ -216,10 +243,15 @@ Load these reference files only when the situation calls for it:
 | File | Purpose |
 |---|---|
 | `references/onboarding.md` | First-run setup flow |
+| `references/setup-migration.md` | Setup modules + version; offers newly-added setup to already-onboarded users |
+| `references/mcp-setup.md` | Connect all MCPs (M365 / Slack / BigQuery / scheduled-tasks) — install steps + verification |
+| `references/permissions-setup.md` | Allow-list rules (incl. per-install connector ID detection) so automatic runs don't prompt |
+| `references/scheduling.md` | Autonomous scheduled runs — defaults, self-contained prompts, cadence in context.md |
 | `references/transcript-reading.md` | Shared transcript lookup / delta / tail-end procedure |
 | `references/weekly-recap.md` | Weekly recap process + format |
 | `references/meeting-prep.md` | On-demand prep + meeting-folder workflow |
 | `references/context-recall.md` | Layered past-work search |
+| `references/meeting-load.md` | Per-weekday meeting-load baseline — compute, refresh, and judge heavy/light relative to the user's norm |
 | `references/log-format.md` | Daily log structure + rules |
 | `references/config-template.md` | Template copied to `~/.claude/work-buddy/config.md` |
 | `references/context-template.md` | Template copied to `~/.claude/work-buddy/context.md` |

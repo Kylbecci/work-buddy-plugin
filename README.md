@@ -32,20 +32,29 @@ It does **not** run in the plain Claude chat app (the standalone chat with no fi
 
 ## Set up once
 
+**Install in the terminal, then use it anywhere.** Run the two install commands once in **Claude Code in your terminal** — you type these yourself (Claude can't run `/plugin` commands on your behalf). After that, Work Buddy is available in *every* Claude Code surface, because it installs to your user profile (`~/.claude/`).
+
 1. Add the marketplace (one time):
    ```
-   /plugin marketplace add YOUR-GH-ORG/work-buddy
+   /plugin marketplace add Kylbecci/work-buddy-plugin
    ```
 2. Install the plugin (one time):
    ```
    /plugin install work-buddy@work-buddy-marketplace
    ```
-3. Run it the first time — it walks you through a ~2-minute setup (your name/role, tone, and a few questions to tailor it to your job):
+3. **(Recommended) Turn on auto-updates** so new versions arrive on their own: open `/plugin` → **Marketplaces** → `work-buddy-marketplace` → **Enable auto-update**. Third-party marketplaces are off by default, so this is a one-time toggle.
+4. Run it the first time — it walks you through a ~2-minute setup (name/role, tone, and a few questions to tailor it to your job). Open your preferred Claude Code (terminal, VS Code, or the desktop app's **Code** section) and type:
    ```
    /work-buddy
    ```
 
-> Replace `YOUR-GH-ORG/work-buddy` with the actual repo path you're given.
+> **If `/plugin` isn't recognized**, your Claude Code is out of date — update it (npm / Homebrew / native installer), restart, and try again.
+>
+> **Desktop app:** use the **Code** section. Work Buddy won't run in **Chat** or **Cowork** — those have no local file access.
+
+### Fallback install (last resort)
+
+If the marketplace route won't work for you, clone the repo and copy `plugins/work-buddy/skills/work-buddy` into `~/.claude/skills/work-buddy/`. This works but **loses auto-update** — you'd have to re-copy on every new version — so only use it if the marketplace install fails.
 
 ## Use every day
 
@@ -57,23 +66,26 @@ That's it — no plugin commands needed again. It'll ask if you want a morning s
 
 ---
 
-## Integrations (optional, but recommended)
+## Connecting your tools
 
-Work Buddy works fully on its own. It gets **much** more useful with these connected:
+Setup walks you through connecting Work Buddy's tools — and it's worth doing all of them, since they're what make it genuinely useful:
 
 | Connect | And you get |
 |---|---|
 | **Microsoft 365** | Calendar meeting briefs + email triage |
 | **Slack** | Message triage — surfaces what needs your attention |
 | **BigQuery** | On-demand reports |
+| **`scheduled-tasks` MCP** | The engine for automatic scheduled runs — set up so it's ready whenever you turn scheduling on |
 
-It'll point these out once during setup. Connect whichever you use; skip the rest.
+Setup helps you connect each one (you run the sign-ins/commands yourself). Core Work Buddy still runs if one is temporarily disconnected — it just uses what's available.
+
+**Automatic scheduling.** Setup gets the pieces in place; whether you actually *turn on* scheduled runs — your morning brief, check-ins, and Friday recap firing on their own — is your call, and you can enable or change it anytime.
 
 ---
 
 ## Updating
 
-When a new version ships, pull it with:
+If you enabled auto-update during setup, new versions arrive automatically at the next launch (you'll get a quick `/reload-plugins` prompt). To pull updates manually instead:
 ```
 /plugin marketplace update work-buddy-marketplace
 ```
