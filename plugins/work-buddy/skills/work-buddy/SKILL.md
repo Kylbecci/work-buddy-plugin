@@ -180,6 +180,8 @@ Goal: surface what needs the user's attention or action — signal, not a summar
 
 **Method — go deeper than `to:me`:** a direct-recipient search alone misses things. Also search @-mentions, messages from key contacts, group DMs by keyword/person, and the user's *own* replies where they committed to something. Group results into **Needs Action** and **FYI**. Default to **precision on Needs Action** — only high-confidence asks/deadlines go there; when unsure, it's FYI. A short trustworthy list beats a bloated one.
 
+**Check the Sent folder before surfacing a routine as open.** Before listing any recurring/routine send (a weekly report, tracking doc, recap, status email) as still-outstanding, search **Sent Items** for a matching recent message — users often complete a routine the evening before or off its usual day, and an inbox-only sweep makes a done task look open. If a matching send is found, treat the routine as done for that cycle, not outstanding. This applies wherever routine tasks are surfaced (Morning Startup action items, check-ins, wrap-up review).
+
 After presenting: invite tuning ("anything here not worth surfacing, or something I missed?"). When the user repeatedly dismisses a sender/type, *offer* to add a filter — never add one silently. Update the heuristics file on confirmation.
 
 ---

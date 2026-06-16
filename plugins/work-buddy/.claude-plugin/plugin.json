@@ -1,7 +1,7 @@
 {
   "name": "work-buddy",
   "description": "A personal daily work assistant — morning briefings, task tracking, daily wrap-ups, weekly recaps, and meeting prep. Invoked with /work-buddy.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": {
     "name": "Kyle Becci",
     "email": "kylbecci@backcountry.com"
