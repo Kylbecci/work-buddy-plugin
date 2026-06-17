@@ -1,74 +1,48 @@
-# Transcript Locations by OS
+# Transcript Locations
 
-Claude Code stores conversation transcripts as JSONL/JSON files. The Work Buddy reads these during wrap-ups and recalibration to capture all work done across sessions. Below are the common locations by OS and client.
-
----
-
-## Windows
-
-### CLI / VS Code
-```
-C:\Users\[username]\.claude\projects\C--Users-[username]\*.jsonl
-```
-
-### Desktop App
-```
-C:\Users\[username]\AppData\Local\Packages\Claude_[package-id]\LocalCache\Roaming\Claude\claude-code-sessions\**\*.json
-```
-
-Note: The Desktop app package ID (`Claude_[package-id]`) may vary. Look for a folder starting with `Claude_` in the `Packages` directory. The session files are nested in subdirectories within `claude-code-sessions`.
+Claude Code stores conversation transcripts as JSONL files. The Work Buddy reads these during wrap-ups and recalibration to capture all work done across sessions.
 
 ---
 
-## macOS
+## All surfaces write to one place
 
-### CLI / VS Code
+**Every** Claude Code surface — the **terminal CLI**, the **VS Code extension**, and the **desktop app's "Code" tab** — writes the **same standard JSONL transcript format** to:
+
 ```
-~/.claude/projects/[hashed-working-directory]/*.jsonl
+~/.claude/projects/
 ```
 
-The hashed directory name is based on your working directory path. Look for folders in `~/.claude/projects/` and check modification dates to find active ones.
+(Windows: `C:\Users\<username>\.claude\projects\`.)
 
-### Desktop App
+Inside, each session is filed in a **subfolder named after the session's working directory** (`cwd`), with path separators and other special characters replaced by dashes — e.g. a session run in `C:\Users\me\workspace` lands in `~/.claude/projects/C--Users-me-workspace/`. The file itself is `<sessionId>.jsonl`.
+
+**Because the folder is keyed to the working directory, one person's sessions are usually spread across several folders** — the terminal opened in your home dir, the desktop app opened in a project/workspace dir, and so on. So the Work Buddy scans **all** subfolders of `~/.claude/projects/`, not just one.
+
+A single glob covers everything:
+
 ```
-~/Library/Application Support/Claude/claude-code-sessions/**/*.json
+~/.claude/projects/**/*.jsonl
 ```
 
 ---
 
-## Linux
+## Desktop app — what NOT to read
 
-### CLI / VS Code
-```
-~/.claude/projects/[hashed-working-directory]/*.jsonl
-```
+The desktop app keeps some files under its own app-data directory (Windows: `…\AppData\Local\Packages\Claude_*\LocalCache\Roaming\Claude\`). **These are not the transcript:**
 
-### Desktop App
-```
-~/.config/Claude/claude-code-sessions/**/*.json
-```
+- `claude-code-sessions\…\local_<id>.json` — **metadata only** (session id, cwd, model, MCP config, title). **No messages.** Ignore it. Its `cliSessionId` field is the name of the real transcript `.jsonl` over in `~/.claude/projects/`.
+- `local-agent-mode-sessions\…\audit.jsonl` — a **different surface** (agent-mode / Cowork), not the Code tab. Don't use it for Code-session wrap-ups.
+
+The real transcript content for any Code session — CLI, VS Code, or desktop — is always the `.jsonl` in `~/.claude/projects/`.
 
 ---
 
-## How to Find Your Paths
+## Finding active sessions
 
-If you're not sure where your transcripts are:
-
-1. **CLI / VS Code:** Look in `~/.claude/projects/`. The subfolder names are your working directory paths with slashes replaced by dashes. Find the one that matches where you typically work.
-
-2. **Desktop App:** Search your system for a folder named `claude-code-sessions`. On Windows, check `AppData\Local\Packages\` for a folder starting with `Claude_`.
-
-3. **Check modification dates:** Your active transcript files will have recent modification timestamps. Sort by date modified to find current sessions.
-
----
-
-## Adding Paths to Your Config
-
-Once you've found your transcript locations, add them to your config file (`~/.claude/work-buddy/config.md`) under the Transcript Paths section:
+Transcript files are named by session UUID, not date — find a day's work by **modification time**, not filename:
 
 ```
-CLI / VS Code: C:\Users\yourname\.claude\projects\C--Users-yourname\*.jsonl
-Desktop App: C:\Users\yourname\AppData\Local\Packages\Claude_abc123\LocalCache\Roaming\Claude\claude-code-sessions\**\*.json
+find ~/.claude/projects -name '*.jsonl' -printf '%TY-%Tm-%Td %TH:%TM  %10s  %p\n' | sort
 ```
 
-Use glob patterns (`*` and `**`) so the Work Buddy can find all transcript files in those directories.
+Sort by mod time to find current/recent sessions; each line entry inside carries an ISO `timestamp` for day-level filtering.

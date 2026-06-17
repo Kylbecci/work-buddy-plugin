@@ -256,4 +256,4 @@ Load these reference files only when the situation calls for it:
 | `references/context-template.md` | Template copied to `~/.claude/work-buddy/context.md` |
 | `references/triage-heuristics-template.md` | Template copied to `~/.claude/work-buddy/triage-heuristics.md` |
 | `references/tasks-template.md` | Template copied to `~/.claude/work-buddy/tasks.md` |
-| `references/transcript-locations.md` | Per-OS transcript path help for onboarding |
+| `references/transcript-locations.md` | Where transcripts live (`~/.claude/projects/`, all surfaces) — onboarding help |

@@ -27,13 +27,14 @@ Style:
 
 ## Transcript Paths
 
-Paths where Claude stores conversation transcripts on your machine. The Work Buddy reads these during wrap-ups and recalibration to capture all work done across sessions.
+Where Claude stores conversation transcripts on your machine. The Work Buddy reads these during wrap-ups and recalibration to capture all work done across sessions.
 
-See [transcript-locations.md](../references/transcript-locations.md) for help finding yours.
+**All** Claude Code surfaces — terminal CLI, the VS Code extension, and the desktop app's "Code" tab — write standard JSONL transcripts under `~/.claude/projects/`, in per-working-directory subfolders. A single all-folders glob therefore covers every surface; the Work Buddy scans all subfolders by modification time. (This field is informational — transcript reading scans `~/.claude/projects/` directly regardless.)
+
+See [transcript-locations.md](../references/transcript-locations.md) for details.
 
 ```
-CLI / VS Code:
-Desktop App:
+Transcript root: ~/.claude/projects/**/*.jsonl
 ```
 
 ---

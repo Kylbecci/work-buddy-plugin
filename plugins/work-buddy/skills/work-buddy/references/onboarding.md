@@ -13,7 +13,7 @@ Loaded only when no config exists at `~/.claude/work-buddy/config.md`. The goal:
    - **Tone** — `concise`, `conversational`, or `detailed`.
 
 3. **Auto-detect, don't ask:**
-   - **Transcript paths** — glob the CLI path (`~/.claude/projects/…`) and enumerate the desktop-app location (Windows: `AppData\Local\Packages\Claude_*`; mac: `~/Library/Application Support/Claude/claude-code-sessions`; linux: `~/.config/Claude/claude-code-sessions`) to resolve the package ID automatically. Write what's found to config. **Only ask if detection fails** — then hand the user the exact `ls`/search command, not prose.
+   - **Transcript paths** — all Claude Code surfaces (CLI, VS Code, desktop "Code" tab) write standard JSONL to `~/.claude/projects/` in per-working-directory subfolders, so there's nothing per-surface to resolve. Confirm `~/.claude/projects/` exists (it will, if they've used Claude Code) and write the single all-folders glob `~/.claude/projects/**/*.jsonl` to config's *Transcript root*. The field is informational — transcript reading scans all `~/.claude/projects/` subfolders by mod time regardless (see `references/transcript-reading.md`). Do **not** chase the desktop app's app-data dir (`Claude_*`) — that store is metadata-only, not the transcript.
    - **Context MDs** — scan `~/.claude/projects/` for `*-context.md`; if any, ask "are these your active projects?" and save the confirmed ones.
 
 4. **Personalize to their work (invited, skippable — but ask).** This is the high-value part. Walk through these conversationally; let them answer what's easy and skip the rest with "we can add more anytime":
