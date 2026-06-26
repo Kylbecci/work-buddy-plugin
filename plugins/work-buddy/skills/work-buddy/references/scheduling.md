@@ -1,6 +1,8 @@
 # Scheduling — autonomous Work Buddy runs (push, not pull)
 
-Lets Work Buddy fire its routines automatically on a schedule instead of only when the user types `/work-buddy`. Opt-in, per-user, fully configurable. This is the **`scheduling`** setup module (setup version 3).
+> **⚠️ WIP — NOT SHIPPED / dormant.** Parked pending a rewrite, sequenced **after the data-dir move (#3)**. **Resolved backend (2026-06-25):** the scheduler is **Desktop Scheduled Tasks** (native; runs locally in the Desktop app with full local-file + connector access) for Desktop users, and **OS cron / Task Scheduler + `claude -p`** for CLI/VS Code. Cloud `/schedule` routines are **out** — they run on remote infra and can't reach local `~/work-buddy/` files or interactively-authed connectors. The old local **`scheduled-tasks` MCP** design described below is **obsolete** and will be rewritten on revival. Scheduling is the one feature that can't be fully surface-identical (Desktop-native UI vs OS-cron elsewhere); it stays the lone opt-in piece. Not wired into setup, On-Demand, or the Reference table.
+
+Lets Work Buddy fire its routines automatically on a schedule instead of only when the user types `/work-buddy`. Opt-in, per-user, fully configurable.
 
 > **Prerequisites — both are set up during standard setup, so they should already be in place:**
 > 1. **The `scheduled-tasks` MCP** (the engine for scheduled runs) — connected as part of `mcp-setup` (`references/mcp-setup.md`). If it's somehow missing, set it up first; don't enable a schedule without it.
@@ -14,7 +16,7 @@ Lets Work Buddy fire its routines automatically on a schedule instead of only wh
 
 Use the **local scheduling tool on the user's machine** — the `scheduled-tasks` MCP (`create_scheduled_task` / `list_scheduled_tasks` / `update_scheduled_task`), which stores each task under `~/.claude/scheduled-tasks/{taskId}/`.
 
-This is **local, NOT the cloud `/schedule` routine** — cloud runs execute on remote infrastructure and can't reach the user's local `~/.claude/work-buddy/` files or their interactively-authed connectors, so they're the wrong fit. (Verified decision; see work-buddy-improvements.md.)
+This is **local, NOT the cloud `/schedule` routine** — cloud runs execute on remote infrastructure and can't reach the user's local `~/work-buddy/` files or their interactively-authed connectors, so they're the wrong fit. (See the WIP marker at the top — the local backend will be rewritten around Desktop Scheduled Tasks / OS-cron on revival.)
 
 **Gotchas to honor:**
 - Cron is evaluated in the user's **local timezone**.

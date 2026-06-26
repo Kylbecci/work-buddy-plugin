@@ -1,6 +1,6 @@
 # Onboarding — First Run
 
-Loaded only when no config exists at `~/.claude/work-buddy/config.md`. The goal: get the user set up quickly **and** leave them knowing how to make the assistant genuinely theirs. Keep it conversational and skippable — never a wall — but don't skip the personalization, because that's what makes Work Buddy useful instead of generic.
+Loaded only when no config exists at `~/work-buddy/config.md`. The goal: get the user set up quickly **and** leave them knowing how to make the assistant genuinely theirs. Keep it conversational and skippable — never a wall — but don't skip the personalization, because that's what makes Work Buddy useful instead of generic.
 
 ---
 
@@ -20,9 +20,10 @@ Loaded only when no config exists at `~/.claude/work-buddy/config.md`. The goal:
    - **Weekly routines** — "Anything you do on a regular cadence? A report every Monday, a standing meeting, a Friday submission? I'll remind you on the right days and plan around them."
    - **Key contacts** — "Who do you work with most, and on what? That helps me prep you for meetings and surface the right messages in triage."
    - **Recurring workflows** — "Any multi-step process you repeat — a month-end close, a pipeline you run? Tell me the steps and I can walk you through it next time."
+   - **Projects workspace (Project Manager)** — "Where do your work projects live — a folder I can track and create project files in? I'll keep each project's status, build target, and a log there and surface them in your briefings." Run the **`project-manager`** module (`references/project-manager-setup.md`): designate a writable root **inside the user folder** (never `~/.claude/`, never OneDrive; confirm if one's already set, don't re-prompt), set the **blanket allow-rule** so it never prompts, then **bulk-classify** what's already there (project / bag / ignore, with bag-recursion). Full per-project setup is **lazy** — it happens the first time they work a project, not now. **Best practice to mention:** keep projects in this folder — better for git, tracking, and it avoids OneDrive sync issues. External projects are supported but not preferred.
    Write their answers into the matching `context.md` sections. Whatever they skip stays blank for later.
 
-5. **Create the data directory + files** at `~/.claude/work-buddy/`:
+5. **Create the data directory + files** at `~/work-buddy/`:
    - Subfolders: `logs/`, `recaps/`, `meetings/`
    - Copy templates: `config.md`, `context.md`, `triage-heuristics.md`, `tasks.md` (from `references/*-template.md`), filled in with the user's answers.
 
@@ -47,7 +48,7 @@ Loaded only when no config exists at `~/.claude/work-buddy/config.md`. The goal:
 ---
 
 ## Notes
-- The data directory (`~/.claude/work-buddy/`) is the user's private, per-machine state. The skill never ships or reads another user's data.
+- The data directory (`~/work-buddy/`) is the user's private, per-machine state. The skill never ships or reads another user's data.
 - If a user re-runs onboarding when a config already exists, don't clobber — ask before overwriting.
-- Onboarding triggers strictly on the **absence of `~/.claude/work-buddy/config.md`**. Do not adopt a differently-named nearby folder (e.g. `work-buddy-backup`) as the data dir — if `config.md` isn't at the canonical path, onboard fresh.
+- Onboarding triggers strictly on the **absence of `~/work-buddy/config.md`**. Do not adopt a differently-named nearby folder (e.g. `work-buddy-backup`) as the data dir — if `config.md` isn't at the canonical path, onboard fresh.
 - **Onboarding is interactive.** Even if you can infer details from the user's broader Claude context (global memory, CLAUDE.md), still *ask* name/role/tone and the personalization questions, and let the user confirm what gets stored. Don't silently auto-fill the whole context from ambient knowledge — the user should know what their assistant knows.

@@ -24,4 +24,4 @@ Inferred from carry-overs and open-item due dates.
 ```
 
 3. **Display in chat for review before saving.** This is the user's record of their week — let them correct or add context before it becomes permanent.
-4. **Save** to `~/.claude/work-buddy/recaps/Week Ending YYYY-MM-DD.md`.
+4. **Save** to `~/work-buddy/recaps/Week Ending YYYY-MM-DD.md`.

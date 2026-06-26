@@ -19,8 +19,10 @@ Setup is tracked as discrete **modules**, each idempotent and runnable on its ow
 | `integrations` | 1 | early connector awareness (superseded by `mcp-setup`) | onboarding (legacy) |
 | `permissions` | 2 | allow-list rules so automatic runs don't prompt | `references/permissions-setup.md` |
 | `mcp-setup` | 3 | connect ALL MCPs (M365, Slack, BigQuery) | `references/mcp-setup.md` |
+| `project-manager` | 4 | projects root + blanket permission + bulk-classify folders (project/bag/ignore); lazy per-project adoption; consent-first `~/.claude` hints | `references/project-manager-setup.md` |
+| `data-dir-move` | 5 | relocate the data dir `~/.claude/work-buddy/` → `~/work-buddy/` (existing users only — copy + verify + repoint + re-run `permissions` for the new path); new users onboard straight to `~/work-buddy/` and skip it | *Data-dir migration* below |
 
-**Current setup version: 3.** (Bump this and add a row whenever a new setup module ships.)
+**Current setup version: 5.** (Bump this and add a row whenever a new setup module ships.)
 
 **Everything is standard setup — get it all working.** Run every module; don't frame any as a skippable extra.
 
@@ -53,6 +55,26 @@ Run **silently** right after reading config:
 5. When all new modules are completed or declined, set `Setup version` to current.
 
 **One offer per session, max.** If the user is mid-task, hold it to the end. Never nag across a briefing.
+
+---
+
+## Data-dir migration (the `data-dir-move` module)
+
+The data dir moved from `~/.claude/work-buddy/` (inside the sensitive `~/.claude/` tree, which hard-gated Bash file-ops) to **`~/work-buddy/`** (a normal user folder). **New users** onboard straight to `~/work-buddy/` and never run this. **Existing users** (data still at `~/.claude/work-buddy/`) get it **once**, consent-gated.
+
+**Trigger — this one is special: it runs from Session Start, NOT the post-briefing module offer.** Because the data dir itself is what's moving, an existing user's `~/work-buddy/config.md` doesn't exist yet, so Session Start's *config-missing* branch would otherwise mistake them for a new user. Per SKILL.md *Session Start*: when `~/work-buddy/config.md` is **missing** but `~/.claude/work-buddy/config.md` **exists**, run this migration **before** onboarding, then proceed as a normal existing user. (The standard post-briefing migration offer still handles every *other* new module.)
+
+**Procedure — idempotent, copy-not-move, never lose data:**
+1. **Detect.** Needed when old `~/.claude/work-buddy/config.md` exists **and** `~/work-buddy/config.md` does **not**. If the new path already has a config, treat as done — never clobber.
+2. **Consent.** Explain plainly: *"I'm moving my data folder out of `~/.claude/` to `~/work-buddy/` so I stop hitting permission prompts. I'll copy everything over, leave the old folder as a backup, and update where I point."* Wait for a yes.
+3. **Copy** the whole `~/.claude/work-buddy/` tree (config, context, triage-heuristics, tasks, `logs/`, `recaps/`, `meetings/`) to `~/work-buddy/`. Bash `cp` is fine — the **destination** `~/work-buddy/` isn't sensitive, and reading the source is read-only (no write-gate).
+4. **Verify.** Confirm the key files + subfolders exist at `~/work-buddy/` and match (counts/sizes). If anything's missing, **stop and report — do not proceed**.
+5. **Repoint.** Sweep the user's own config/context for absolute `~/.claude/work-buddy/...` paths (e.g. named locations) and update them to `~/work-buddy/...`. Most paths are managed/relative; catch stragglers.
+6. **Re-run `permissions`** for the new path (`references/permissions-setup.md`) so `~/work-buddy/` gets its Read/Edit/Write rules; the old `~\.claude\work-buddy\` rules can stay (harmless) or be removed.
+7. **Leave the old folder as a backup** — do **not** delete it automatically. Tell the user `~/.claude/work-buddy/` is safe to delete once they've confirmed everything works.
+8. Mark `data-dir-move` complete and set `Setup version: 5`.
+
+**Safety:** copy-not-move means a failure never loses data (the original stays put); re-running after a partial copy just fills gaps. Until migration completes, the old location remains the live data dir.
 
 ---
 

@@ -1,6 +1,6 @@
 # Daily Log Format
 
-Each daily log lives at `~/.claude/work-buddy/logs/YYYY-MM-DD.md`. One file per business day (Monday through Friday). Logs persist permanently.
+Each daily log lives at `~/work-buddy/logs/YYYY-MM-DD.md`. One file per business day (Monday through Friday). Logs persist permanently.
 
 ---
 
@@ -49,7 +49,7 @@ Each daily log lives at `~/.claude/work-buddy/logs/YYYY-MM-DD.md`. One file per 
 
 3. **Wrap-up writes the final sections.** Daily Summary, Work Completed, Open Items, and Carry-Overs are generated at wrap-up by synthesizing all JSONL transcripts from the day plus any checkpoints and tasks already in the log.
 
-4. **Open Items use checkboxes.** `- [ ]` for open, `- [x]` for completed. **These are historical snapshots** — they record what was open at the end of the day. The source of truth for current open tasks is `~/.claude/work-buddy/tasks.md`. Morning startup reads `tasks.md`, not daily log Open Items. **Carry-Overs use prose** — they describe what needs to continue and where it left off. Both sections are still written at wrap-up for historical context and weekly recaps, but they do not drive the morning task list.
+4. **Open Items use checkboxes.** `- [ ]` for open, `- [x]` for completed. **These are historical snapshots** — they record what was open at the end of the day. The source of truth for current open tasks is `~/work-buddy/tasks.md`. Morning startup reads `tasks.md`, not daily log Open Items. **Carry-Overs use prose** — they describe what needs to continue and where it left off. Both sections are still written at wrap-up for historical context and weekly recaps, but they do not drive the morning task list.
 
 5. **Due dates are explicit.** Every open item either has a date or says "no deadline." This enables the stale item tracking (3 business day threshold for items with no deadline).
 

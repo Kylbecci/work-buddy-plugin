@@ -3,11 +3,7 @@
 Shared procedure used by **Daily Wrap-Up, Midday Check-In, and missed/retroactive wrap-ups.** Transcripts are the ground truth of what actually happened across all Claude sessions — the daily log only holds checkpoints and tasks captured mid-day. Never rely solely on emails, context changes, or log checkpoints; they capture communications and final state, not the work itself.
 
 ## Where transcripts live
-**All** Claude Code surfaces — the terminal CLI, the VS Code extension, **and the desktop app's "Code" tab** — write the **same standard JSONL transcript format** to `~/.claude/projects/`. (Confirmed across surfaces 2026-06-17.) Each session is filed in a subfolder whose name is derived from the session's working directory (`cwd`), with path separators and other special characters replaced by dashes — e.g. a session run in `C:\Users\me\workspace` lands in `~/.claude/projects/C--Users-me-workspace/` — and the file is named `<sessionId>.jsonl`.
-
-Because the folder is keyed to the cwd, **one user's sessions are commonly spread across several project folders** — the terminal opened in the home dir, the desktop app opened in a project/workspace dir, etc. Never assume a single folder.
-
-> **Desktop app note:** the desktop app *also* keeps a `local_<id>.json` per session under its own app-data dir (`…/Roaming/Claude/claude-code-sessions/…`). That file is **metadata only** — session id, cwd, model, MCP config, title — **no messages**. Ignore it. The real transcript content is always the `<cliSessionId>.jsonl` in `~/.claude/projects/` (the desktop session's `cliSessionId` field is the `.jsonl` filename). Do **not** chase `audit.jsonl` under `local-agent-mode-sessions/` — that's a different surface (agent-mode/Cowork), not the Code tab.
+All Claude Code surfaces (terminal CLI, VS Code extension, desktop app's "Code" tab) write the same JSONL transcripts to `~/.claude/projects/`, filed in per-`cwd` subfolders, each file named `<sessionId>.jsonl`. Because the folder is keyed to the working directory, **one user's sessions are commonly spread across several folders** — so always scan *all* of them; never assume a single folder. Full location detail (the `cwd`→dash folder-name encoding, and the desktop-app metadata files to ignore) lives in `transcript-locations.md` — the single source for location specifics.
 
 ## Lookup procedure
 Transcript files are named with UUIDs, not dates — you can't find a day's work by filename. Every time:

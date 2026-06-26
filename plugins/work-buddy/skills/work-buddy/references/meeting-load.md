@@ -6,7 +6,7 @@
 
 ## Where the baseline lives
 
-In `~/.claude/work-buddy/context.md`, under the auto-managed **Meeting Load Baseline** section, as a fixed table:
+In `~/work-buddy/context.md`, under the auto-managed **Meeting Load Baseline** section, as a fixed table:
 
 | Weekday | Avg meeting hrs | Avg meeting count | Sample days |
 |---|---|---|---|

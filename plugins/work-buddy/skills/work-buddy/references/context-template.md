@@ -4,6 +4,8 @@ This is your personal context file. Use it to teach your Work Buddy about your s
 
 Everything in this file is optional — fill in what's relevant to you and add more over time. You can also update this anytime by just telling your Work Buddy what to add or change.
 
+This file is your **personal** context. **Individual projects are tracked separately** — each lives in its own folder under your projects workspace with its own `context.md` (status, cadence, deadlines, working files). Just tell your Work Buddy "start a project for X" to spin one up.
+
 ---
 
 ## Who You Are
